@@ -12,12 +12,12 @@ echo "==> Building ${IMAGE} inside the Minikube Docker daemon"
 eval "$(minikube docker-env)"
 docker build -q --build-arg APP_VERSION="${VERSION}" -t "${IMAGE}" .
 
-echo "==> Applying Kubernetes manifests"
-kubectl apply -f k8s/
-
-echo "==> Rolling out ${IMAGE}"
-kubectl set image deployment/lab2-app lab2-app="${IMAGE}"
+echo "==> Applying Kubernetes manifests with image ${IMAGE}"
+kubectl apply -f k8s/service.yaml
+sed "s|image: lab2-app:.*|image: ${IMAGE}|" k8s/deployment.yaml | kubectl apply -f -
 kubectl annotate deployment/lab2-app kubernetes.io/change-cause="CD deploy ${IMAGE}" --overwrite
+
+echo "==> Waiting for the rolling update"
 kubectl rollout status deployment/lab2-app --timeout=120s
 
 echo "==> Smoke test (inside the cluster, through the Service DNS name)"
