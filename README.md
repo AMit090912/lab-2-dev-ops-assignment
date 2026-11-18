@@ -46,4 +46,10 @@ kubectl scale deployment/lab2-app --replicas=5
 ## Continuous deployment
 
 `scripts/deploy.sh` builds an image tagged with the git commit, applies `k8s/`, updates the Deployment and waits
-for the rollout. The GitHub Actions workflow runs it on every push to `main`.
+for the rollout. The GitHub Actions workflow runs it on every push to `main`:
+
+1. **build-and-test** - build the image and check `/health` in a running container
+2. **deploy** - start Minikube, run `scripts/deploy.sh <commit>`, wait for the rolling update and smoke-test the Service
+
+Every deployment is recorded in `kubectl rollout history` with the commit it came from, so any release can be
+rolled back with `kubectl rollout undo`.
