@@ -21,6 +21,6 @@ kubectl annotate deployment/lab2-app kubernetes.io/change-cause="CD deploy ${IMA
 kubectl rollout status deployment/lab2-app --timeout=120s
 
 echo "==> Smoke test"
-URL="$(minikube service lab2-app --url)"
+URL="http://$(minikube ip):30080"
 curl -fsS "${URL}/health"
 echo

@@ -33,7 +33,7 @@ minikube start --driver=docker --container-runtime=docker
 eval $(minikube docker-env) && docker build -t lab2-app:1.0 .
 kubectl apply -f k8s/
 kubectl get deploy,pods,svc
-minikube service lab2-app --url
+curl http://$(minikube ip):30080/health
 
 # rolling update, rollback, scaling
 kubectl set image deployment/lab2-app lab2-app=lab2-app:2.0
