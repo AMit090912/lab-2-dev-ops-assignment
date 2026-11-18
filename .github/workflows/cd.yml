@@ -1,0 +1,44 @@
+name: CI/CD - build and deploy to Kubernetes
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t lab2-app:ci .
+
+      - name: Test container
+        run: |
+          docker run -d --name app-test -p 5000:5000 lab2-app:ci
+          for i in $(seq 1 20); do curl -fs localhost:5000/health && exit 0; sleep 1; done
+          docker logs app-test; exit 1
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start Minikube
+        run: |
+          curl -sSLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          sudo install minikube /usr/local/bin/minikube
+          minikube start --driver=docker
+
+      - name: Deploy (apply manifests + rolling update)
+        run: bash scripts/deploy.sh "${GITHUB_SHA::7}"
+
+      - name: Show result
+        run: |
+          kubectl get deployments,pods,services -o wide
+          kubectl rollout history deployment/lab2-app
