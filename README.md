@@ -33,7 +33,7 @@ minikube start --driver=docker --container-runtime=docker
 eval $(minikube docker-env) && docker build -t lab2-app:1.0 .
 kubectl apply -f k8s/
 kubectl get deploy,pods,svc
-kubectl run smoke-test --rm -i --restart=Never --image=busybox:1.36 -- wget -qO- http://lab2-app/health
+kubectl run smoke-test --rm -i --quiet --restart=Never --image=busybox:1.36 -- wget -qO- http://lab2-app/health
 kubectl port-forward svc/lab2-app 8080:80     # then open http://localhost:8080
 
 # rolling update, rollback, scaling

@@ -21,5 +21,5 @@ echo "==> Waiting for the rolling update"
 kubectl rollout status deployment/lab2-app --timeout=120s
 
 echo "==> Smoke test (inside the cluster, through the Service DNS name)"
-kubectl run smoke-test --rm -i --restart=Never --image=busybox:1.36 -- wget -qO- http://lab2-app/health
+kubectl run smoke-test --rm -i --quiet --restart=Never --image=busybox:1.36 -- wget -qO- http://lab2-app/health
 echo
