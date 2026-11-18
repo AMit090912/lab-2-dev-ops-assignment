@@ -20,7 +20,6 @@ kubectl set image deployment/lab2-app lab2-app="${IMAGE}"
 kubectl annotate deployment/lab2-app kubernetes.io/change-cause="CD deploy ${IMAGE}" --overwrite
 kubectl rollout status deployment/lab2-app --timeout=120s
 
-echo "==> Smoke test"
-URL="http://$(minikube ip):30080"
-curl -fsS "${URL}/health"
+echo "==> Smoke test (inside the cluster, through the Service DNS name)"
+kubectl run smoke-test --rm -i --restart=Never --image=busybox:1.36 -- wget -qO- http://lab2-app/health
 echo
