@@ -1,0 +1,7 @@
+# Submission PDFs (uploaded separately)
+submit/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
