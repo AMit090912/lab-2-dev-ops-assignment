@@ -33,7 +33,7 @@ jobs:
         run: |
           curl -sSLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           sudo install minikube /usr/local/bin/minikube
-          minikube start --driver=docker
+          minikube start --driver=docker --container-runtime=docker
 
       - name: Deploy (apply manifests + rolling update)
         run: bash scripts/deploy.sh "${GITHUB_SHA::7}"

@@ -29,7 +29,7 @@ docker compose up -d --build        # app + redis on http://localhost:8000
 ## Kubernetes (Minikube)
 
 ```bash
-minikube start --driver=docker
+minikube start --driver=docker --container-runtime=docker
 eval $(minikube docker-env) && docker build -t lab2-app:1.0 .
 kubectl apply -f k8s/
 kubectl get deploy,pods,svc
